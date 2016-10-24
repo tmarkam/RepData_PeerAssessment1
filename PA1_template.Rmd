@@ -1,5 +1,7 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
+author: "Ted M"
+date: "October 23, 2016"
 output: 
   html_document:
     keep_md: true
@@ -8,11 +10,28 @@ output:
 
 ## Loading and preprocessing the data
 
+```{r cache=TRUE}
+# unzip and read the data from the "activity.csv" file, and parse the date field
+unzip("repdata%2Fdata%2Factivity.zip")
+activity <- read.csv("activity.csv")
+activity$date <- as.Date(activity$date, format="%Y-%m-%d")
 
+```
 
 ## What is mean total number of steps taken per day?
 
-
+```{r}
+# summarize the dataframe into daily total activity
+suppressMessages(library(dplyr))
+dailyActivity <- activity %>% group_by(date) %>% summarize(steps=sum(steps, na.rm=TRUE))
+# plot the total steps per day as a histogram
+plot(dailyActivity$date, dailyActivity$steps, type="h", lwd=4, main="Total steps per day", xlab="Date", ylab="Steps")
+# functions to calculate the mean and median # of steps per day, ignoring NA's
+meanstepsperday <- function() {mean(dailyActivity$steps, na.rm=TRUE)}
+medianstepsperday <- function() { median(dailyActivity$steps, na.rm=TRUE)}
+```
+The mean number of steps per day is **`r meanstepsperday()`**  
+The median number of steps per day is **`r medianstepsperday()`**
 
 ## What is the average daily activity pattern?
 
